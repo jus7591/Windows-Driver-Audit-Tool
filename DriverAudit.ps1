@@ -10,11 +10,11 @@
     Justin Maddox
 
 .VERSION
-    1.0
+    1.1
 #>
 
 $Project = "Windows Driver Audit Tool"
-$Version = "1.0"
+$Version = "1.1"
 $Author = "Justin Maddox"
 $ScanStartTime = Get-Date
 $ReportGenerated = Get-Date
@@ -51,7 +51,7 @@ $script:Report = @{
 .NOTES
     Author: Justin Maddox
     Project: Windows Driver Audit Tool
-    Version: 1.0
+    Version: 1.1
 #>
 function Show-DriverInformation
 {
@@ -80,6 +80,19 @@ function Show-DriverInformation
         Write-Host "Manufacturer: $($Driver.Manufacturer)"
         Write-Host "Driver Version: $($Driver.DriverVersion)"
         Write-Host "Driver Date: $($Driver.DriverDate)"
+        Write-Host "Signed: $($Driver.IsSigned)"
+        Write-Host "Signer: $($Driver.Signer)"
+
+        # Check if driver is digitally signed
+        if ($Driver.IsSigned -eq $false)
+        {
+            Write-Host "WARNING: Unsigned Driver Detected" -ForegroundColor Red
+
+            $script:Warnings.Add(
+                "$($Driver.DeviceName) has an unsigned driver."
+            )
+        }
+
 
         # Store driver information for reports
         $script:Report.Drivers += @{
@@ -87,6 +100,22 @@ function Show-DriverInformation
             Manufacturer = $Driver.Manufacturer
             Version = $Driver.DriverVersion
             Date = $Driver.DriverDate
+            Signed = if ($Driver.IsSigned)
+            {
+                "Yes"
+            }
+            else
+            {
+                "No"
+            }
+            Signer = if ($Driver.Signer)
+            {
+                $Driver.Signer
+            }
+            else
+            {
+                "Unknown"
+            }
         }
     }
 
@@ -116,7 +145,7 @@ function Show-DriverInformation
 .NOTES
     Author: Justin Maddox
     Project: Windows Driver Audit Tool
-    Version: 1.0
+    Version: 1.1
 #>
 
 function Show-ProblemDevices
@@ -189,7 +218,7 @@ function Show-ProblemDevices
 .NOTES
     Author: Justin Maddox
     Project: Windows Driver Audit Tool
-    Version: 1.0
+    Version: 1.1
 #>
 function Show-DriverAuditSummary
 {
@@ -418,6 +447,8 @@ $HTML += @"
 <th>Manufacturer</th>
 <th>Version</th>
 <th>Date</th>
+<th>Signed</th>
+<th>Signer</th>
 </tr>
 
 "@
@@ -433,6 +464,8 @@ $HTML += @"
 <td>$($Driver.Manufacturer)</td>
 <td>$($Driver.Version)</td>
 <td>$($Driver.Date)</td>
+<td>$($Driver.Signed)</td>
+<td>$($Driver.Signer)</td>
 
 </tr>
 

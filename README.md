@@ -22,6 +22,8 @@ This project demonstrates PowerShell automation, Windows administration, hardwar
   - Manufacturer
   - Driver version
   - Driver date
+  - Validates driver digital signature information
+  - Reports driver signing status and publisher information
 - Filters incomplete driver records
 - Categorizes drivers into:
   - Microsoft drivers
@@ -124,6 +126,8 @@ Collects:
 - Driver manufacturers
 - Driver versions
 - Driver dates
+- Driver signing status
+- Driver signer information
 
 
 ### Show-ProblemDevices
@@ -154,7 +158,9 @@ Report
 │   ├── Device
 │   ├── Manufacturer
 │   ├── Version
-│   └── Date
+│   ├── Date
+│   ├── Signed
+│   └── Signer
 │
 └── ProblemDevices
     ├── Device
@@ -338,11 +344,12 @@ Windows-Driver-Audit-Tool
 Planned enhancements:
 
 - CSV export for driver inventory and problem devices
-- Driver signature verification
 - Additional driver health recommendations
 - Improved HTML dashboard visualization
 - Manufacturer-based driver reporting
 - Automated driver update recommendations
+- Driver comparison against approved baselines
+- Historical audit comparison reports
 
 ---
 
