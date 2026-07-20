@@ -470,7 +470,59 @@ Write-Host "Report saved:"
 Write-Host $ReportPath
 }
 
+function Export-DriverAuditCSV
+{
+    Write-Host ""
+    Write-Host "===== CSV Export ====="
+
+    # Create export folder if it does not exist
+    $ExportPath = ".\Reports"
+
+    if (!(Test-Path $ExportPath))
+    {
+        New-Item -Path $ExportPath -ItemType Directory | Out-Null
+    }
+
+
+    # Export Driver Inventory
+    if ($script:Report.Drivers.Count -gt 0)
+    {
+        $DriverCSV = Join-Path $ExportPath "DriverInventory.csv"
+
+        $script:Report.Drivers |
+        Export-Csv `
+            -Path $DriverCSV `
+            -NoTypeInformation
+
+        Write-Host "Driver inventory exported:"
+        Write-Host $DriverCSV -ForegroundColor Green
+    }
+
+
+    # Export Problem Devices
+    if ($script:Report.ProblemDevices.Count -gt 0)
+    {
+        $ProblemCSV = Join-Path $ExportPath "ProblemDevices.csv"
+
+        $script:Report.ProblemDevices |
+        Export-Csv `
+            -Path $ProblemCSV `
+            -NoTypeInformation
+
+        Write-Host "Problem devices exported:"
+        Write-Host $ProblemCSV -ForegroundColor Green
+    }
+    else
+    {
+        Write-Host "No problem devices detected. CSV not created."
+    }
+
+
+    Write-Host ""
+}
+
 Show-DriverInformation
 Show-ProblemDevices
 Show-DriverAuditSummary
 Export-DriverAuditReport
+Export-DriverAuditCSV
